@@ -1,4 +1,5 @@
 const express = require('express');
+const { Result } = require('express-validator');
 
 const api = require('./api/v1');
 const { logger, requestId, requestLog } = require('./config/logger');
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/api', api);
 app.use('/api/1', api);
+
 app.use((req, res, next) => {
   const statusCode = 400;
   const message = 'Error. Route not found';
@@ -20,9 +22,12 @@ app.use((req, res, next) => {
   next({ statusCode, message });
 });
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message = '' } = err;
+  if (err instanceof Result) {
+    return res.status(400).json({ errors: err.array() });
+  }
+  const { statusCode = 500, message = 'Unknown error ocurred!' } = err;
   logger.error(message);
-  res.status(statusCode).json({ message });
+  return res.status(statusCode).json({ message });
 });
 
 module.exports = app;
