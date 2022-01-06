@@ -3,6 +3,11 @@ const { validationResult } = require('express-validator');
 const User = require('./model');
 const config = require('../../../config');
 
+/**
+ * create token a user
+ * @param {Object} user
+ * @returns function sign
+ */
 function createToken(user) {
   return jwt.sign({ id: user.id, email: user.email }, config.jwtsecret, {
     expiresIn: 86400,
@@ -31,6 +36,13 @@ exports.signUp = async (req, res, next) => {
   return res.status(201).json({ message: 'received' });
 };
 
+/**
+ * Sign in user
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ * @returns sign in msg
+ */
 exports.signIn = async (req, res, next) => {
   console.log('body: ', req.body);
   const errors = validationResult(req);
