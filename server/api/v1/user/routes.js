@@ -1,5 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
+const passport = require('passport');
 const userController = require('./controller');
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.post(
   body('password', 'Password is required').notEmpty(),
   userController.signIn,
 );
+router.get('/special', passport.authenticate('jwt', { session: false }), (req, res) => res.status(200).json({ msg: 'success' }));
 
 module.exports = router;
