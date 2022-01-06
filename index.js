@@ -5,6 +5,8 @@ const config = require('./server/config');
 
 const { database, port } = config;
 
+console.log('initial config', config);
+
 connect({
   url: database.url,
   username: database.username,
