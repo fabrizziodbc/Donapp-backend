@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const config = {
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 5000,
   jwtsecret: 'Your secret is here',
   database: {
     url: process.env.DATABASE_URL,
