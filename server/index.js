@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const { Result } = require('express-validator');
+const cors = require('cors');
 const passportMiddleware = require('./config/passport');
 
 const api = require('./api/v1');
@@ -11,6 +12,7 @@ const app = express();
 // middlewares
 app.use(requestId);
 app.use(requestLog);
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(passport.initialize());

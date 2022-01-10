@@ -33,7 +33,12 @@ exports.signUp = async (req, res, next) => {
   const newUser = new User(req.body);
   await newUser.save();
 
-  return res.status(201).json({ message: 'received' });
+  return res.status(201).json({
+    name: newUser.name,
+    surname: newUser.surname,
+    email: newUser.email,
+    token: createToken(newUser),
+  });
 };
 
 /**
