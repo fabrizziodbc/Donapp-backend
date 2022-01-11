@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post(
   '/signup',
+  body('name', 'Name is required').notEmpty(),
   body('email', 'Email is required').notEmpty(),
   body('password', 'Password is required').notEmpty(),
   userController.signUp,

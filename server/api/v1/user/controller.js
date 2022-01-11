@@ -21,7 +21,6 @@ function createToken(user) {
  * @returns new user
  */
 exports.signUp = async (req, res, next) => {
-  console.log('body: ', req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(errors);
@@ -33,7 +32,7 @@ exports.signUp = async (req, res, next) => {
   const newUser = new User(req.body);
   await newUser.save();
 
-  return res.status(201).json({
+  return res.status(200).json({
     name: newUser.name,
     surname: newUser.surname,
     email: newUser.email,

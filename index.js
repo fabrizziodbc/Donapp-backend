@@ -15,6 +15,8 @@ connect({
 
 const server = http.createServer(app);
 
-server.listen(port, () => {
+const listen = server.listen(port, () => {
   console.log(`server running at ${port}`);
 });
+
+module.exports = { server, listen };
