@@ -5,17 +5,22 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "start": "cross-env NODE_ENV=production node index.js"
+    "start": "cross-env NODE_ENV=production node index.js",
+		"test": "cross-env NODE_ENV=test jest --coverage",
+		"test:watch": "cross-env NODE_ENV=test jest --coverage --watch"
   },
   "keywords": [],
   "author": "FabrizzioDBC <fabrizziodbc@gmai.com>",
   "license": "MIT",
   "devDependencies": {
+    "coveralls": "^3.1.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
-    "nodemon": "^2.0.15"
+    "jest": "^27.4.7",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
