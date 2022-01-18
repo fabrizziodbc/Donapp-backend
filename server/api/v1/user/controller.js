@@ -59,7 +59,12 @@ exports.signIn = async (req, res, next) => {
   }
   const isMatch = await user.comparePassword(req.body.password);
   if (isMatch) {
-    return res.status(200).json({ user, token: createToken(user) });
+    return res.status(200).json({
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      token: createToken(user),
+    });
   }
   return res.status(400).json({ msg: 'The email or password are incorrect' });
 };
