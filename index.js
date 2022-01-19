@@ -8,9 +8,10 @@ const { database, port } = config;
 console.log('initial config', config);
 
 connect({
-  url: database.url,
   username: database.username,
   password: database.password,
+  databaseName: database.name,
+  url: database.url,
 });
 
 const server = http.createServer(app);
