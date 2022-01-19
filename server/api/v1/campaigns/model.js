@@ -16,6 +16,11 @@ const campaign = new mongoose.Schema({
   commentsDb: { type: Array, default: [] },
   date: { type: Date, default: Date.now },
   active: { type: Boolean, default: true },
+  user: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
 });
 
 const model = mongoose.model('campaign', campaign);
