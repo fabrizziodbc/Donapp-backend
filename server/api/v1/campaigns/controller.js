@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 const Model = require('./model');
+const User = require('../user/model');
 
 exports.id = async (req, res, next) => {
   const { id } = req.params;
@@ -31,10 +33,22 @@ exports.create = async (req, res, next) => {
   }
   const { body = {} } = req;
   const newDocument = new Model(body);
+  const user = await User.findById(body.user);
+  if (!user) {
+    return res.status(404).json({ msg: 'Could not find user for provided id' });
+  }
+
   try {
-    const data = await newDocument.save();
+    const session = await mongoose.startSession();
+    await session.withTransaction(async () => {
+      await newDocument.save({ session });
+      await user.campaigns.push(newDocument);
+      await user.save({ session });
+    });
+    await session.endSession();
+
     const status = 201;
-    return res.status(status).json({ data });
+    return res.status(status).json({ data: newDocument });
   } catch (error) {
     return next(error);
   }
@@ -80,10 +94,19 @@ exports.update = async (req, res, next) => {
   }
 };
 exports.delete = async (req, res, next) => {
-  const { doc = {} } = req;
+  const { id } = req.params;
   try {
-    const data = await doc.remove();
-    res.json({ data });
+    const session = await mongoose.startSession();
+    await session.withTransaction(async () => {
+      const campaign = await Model.findByIdAndDelete(id, {
+        session,
+      }).populate('user');
+      console.log('campaign', campaign);
+      await campaign.user.campaigns.pull(campaign);
+      await campaign.user.save({ session });
+    });
+    session.endSession();
+    res.status(200).json({ msg: 'Delete campaign' });
   } catch (error) {
     next(error);
   }
