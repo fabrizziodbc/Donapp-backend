@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const { logger } = require('./config/logger');
 
-const connect = ({ url = '', username, password }, options = {}) => {
+const connect = ({
+  username, password, databaseName, url = '',
+}, options = {}) => {
   const encodedPassword = encodeURIComponent(password);
-  const databaseName = 'donapp';
+  // const databaseName = 'donapp';
   let dburl;
   if (username !== undefined && password !== undefined) {
     dburl = `mongodb+srv://${username}:${encodedPassword}@cluster0.mcika.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
