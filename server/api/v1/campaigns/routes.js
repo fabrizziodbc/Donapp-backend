@@ -33,6 +33,9 @@ router
     ).isLength({ min: 5 }),
     controller.create,
   );
+router
+  .route('/my-campaigns')
+  .get(controller.getByUserId);
 router.param('id', controller.id);
 router
   .route('/:id')

@@ -1,7 +1,9 @@
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Model = require('./model');
 const User = require('../user/model');
+const { jwtsecret } = require('../../../config');
 
 exports.id = async (req, res, next) => {
   const { id } = req.params;
@@ -26,6 +28,16 @@ exports.all = async (req, res, next) => {
     next(error);
   }
 };
+exports.getByUserId = async (req, res, next) => {
+  try {
+    const userData = jwt.verify(req.headers.usertoken, jwtsecret);
+    const data = await User.findById(userData.id).select('-__v').populate({ path: 'campaigns' });
+    res.json({ data });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -34,6 +46,7 @@ exports.create = async (req, res, next) => {
   const { body = {} } = req;
   const newDocument = new Model(body);
   const user = await User.findById(body.user);
+  console.log('body.user :', body.user);
   if (!user) {
     return res.status(404).json({ msg: 'Could not find user for provided id' });
   }
