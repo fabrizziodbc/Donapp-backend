@@ -31,7 +31,9 @@ exports.all = async (req, res, next) => {
 exports.getByUserId = async (req, res, next) => {
   try {
     const userData = jwt.verify(req.headers.usertoken, jwtsecret);
-    const data = await User.findById(userData.id).select('-__v').populate({ path: 'campaigns' });
+    const data = await User.findById(userData.id)
+      .select('-__v')
+      .populate({ path: 'campaigns' });
     res.json({ data });
   } catch (error) {
     next(error);
@@ -41,12 +43,14 @@ exports.getByUserId = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('salió mal :c');
     return next(errors);
   }
+  const userData = jwt.verify(req.headers.usertoken, jwtsecret);
   const { body = {} } = req;
-  const newDocument = new Model(body);
-  const user = await User.findById(body.user);
-  console.log('body.user :', body.user);
+  const newDocument = new Model({ ...body, user: userData.id });
+  const user = await User.findById(userData.id);
+  console.log('userData.id :', userData.id);
   if (!user) {
     return res.status(404).json({ msg: 'Could not find user for provided id' });
   }
