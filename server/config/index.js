@@ -8,6 +8,9 @@ const getEnv = () => {
   if (process.env.NODE_ENV === 'test') {
     databaseUrl = process.env.DATABASE_TEST;
   }
+  if (process.env.NODE_ENV === 'production') {
+    databaseUrl = process.env.DATABASE_PRODUCTION;
+  }
   return databaseUrl;
 };
 
@@ -21,5 +24,5 @@ const config = {
     url: process.env.DATABASE_URL,
   },
 };
-
+console.log(config.database.password);
 module.exports = config;

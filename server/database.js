@@ -4,11 +4,10 @@ const { logger } = require('./config/logger');
 const connect = ({
   username, password, databaseName, url = '',
 }, options = {}) => {
-  const encodedPassword = encodeURIComponent(password);
   // const databaseName = 'donapp';
   let dburl;
   if (username !== undefined && password !== undefined) {
-    dburl = `mongodb+srv://${username}:${encodedPassword}@cluster0.mcika.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
+    dburl = `mongodb+srv://${username}:${password}@cluster0.mcika.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
     logger.info('Connected from MongoAtlas');
   } else {
     dburl = `mongodb://${url}`;

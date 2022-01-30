@@ -13,6 +13,16 @@ const app = express();
 app.use(requestId);
 app.use(requestLog);
 app.use(cors());
+/* const whitelist = ['https://localhost:3000'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido'));
+    }
+  },
+})); */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(passport.initialize());
