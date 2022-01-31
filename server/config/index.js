@@ -28,5 +28,9 @@ const config = {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   },
+  epaycoKey: {
+    public: process.env.EPAYCO_PUBLIC_KEY,
+    private: process.env.EPAYCO_PRIVATE_KEY,
+  },
 };
 module.exports = config;
