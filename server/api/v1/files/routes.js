@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: 'dev_setups',
     });
-    /* console.log('uploadResponse :', uploadResponse); */
+    /*  console.log('uploadResponse :', uploadResponse); */
     res.json({ secureUrl: uploadResponse.secure_url });
   } catch (err) {
     console.error(err);
