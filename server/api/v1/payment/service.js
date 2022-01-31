@@ -17,7 +17,7 @@ async function createCustomer(user) {
   const customerInfo = {
     token_card: get(user, 'billing.creditCards[0].tokenId'),
     name: user.name,
-    last_name: user.lastName,
+    last_name: user.surname,
     email: user.email,
     default: true,
   };
@@ -25,7 +25,7 @@ async function createCustomer(user) {
 }
 
 async function makePayment(user, payment) {
-  const defaultTokenId = get(user, 'billing.creaditCards[0].tokenId');
+  const defaultTokenId = get(user, 'billing.creditCards[0].tokenId');
   const customerId = get(user, 'billing.customerId');
 
   const paymentInfo = {
@@ -33,8 +33,8 @@ async function makePayment(user, payment) {
     customer_id: customerId,
     doc_type: get(payment, 'docType'),
     doc_number: get(payment, 'docNumber'),
-    name: get(payment, 'name', user.firstName),
-    last_name: get(payment, 'lastName', user.lastName),
+    name: get(payment, 'name', user.name),
+    last_name: get(payment, 'lastName', user.surname),
     email: get(payment, 'email', user.email),
     city: get(payment, 'city'),
     address: get(payment, 'address'),
@@ -48,6 +48,7 @@ async function makePayment(user, payment) {
     currency: get(payment, 'currency'),
     dues: get(payment, 'dues'),
   };
+  // console.log('payment info', paymentInfo);
   return epayco.charge.create(paymentInfo);
 }
 
