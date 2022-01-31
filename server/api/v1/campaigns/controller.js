@@ -43,7 +43,6 @@ exports.getByUserId = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('salió mal :c');
     return next(errors);
   }
   const userData = jwt.verify(req.headers.usertoken, jwtsecret);
