@@ -18,6 +18,6 @@ router.post(
   body('password', 'Password is required').notEmpty(),
   userController.signIn,
 );
-router.get('/special', passport.authenticate('jwt', { session: false }), (req, res) => res.status(200).json({ msg: 'success' }));
+router.get('/special', passport.authenticate('jwt', { session: true }), (req, res) => res.status(200).json({ msg: 'success', user: req.user }));
 
 module.exports = router;
