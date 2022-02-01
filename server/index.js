@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
@@ -15,6 +16,7 @@ const app = express();
 app.use(requestId);
 app.use(requestLog);
 app.use(cors());
+
 /* const whitelist = ['https://localhost:3000'];
 app.use(cors({
   origin: (origin, callback) => {
