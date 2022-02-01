@@ -1,11 +1,11 @@
-const express = require('express');
-const passport = require('passport');
-const { Result } = require('express-validator');
-const cors = require('cors');
-const passportMiddleware = require('./config/passport');
+const express = require("express");
+const passport = require("passport");
+const { Result } = require("express-validator");
+const cors = require("cors");
+const passportMiddleware = require("./config/passport");
 
-const api = require('./api/v1');
-const { logger, requestId, requestLog } = require('./config/logger');
+const api = require("./api/v1");
+const { logger, requestId, requestLog } = require("./config/logger");
 
 const app = express();
 
@@ -13,6 +13,7 @@ const app = express();
 app.use(requestId);
 app.use(requestLog);
 app.use(cors());
+
 /* const whitelist = ['https://localhost:3000'];
 app.use(cors({
   origin: (origin, callback) => {
@@ -29,12 +30,12 @@ app.use(passport.initialize());
 passport.use(passportMiddleware);
 
 // Routes
-app.use('/api', api);
-app.use('/api/1', api);
+app.use("/api", api);
+app.use("/api/1", api);
 
 app.use((req, res, next) => {
   const statusCode = 400;
-  const message = 'Error. Route not found';
+  const message = "Error. Route not found";
   logger.warn(message);
   next({ statusCode, message });
 });
@@ -42,7 +43,7 @@ app.use((err, req, res, next) => {
   if (err instanceof Result) {
     return res.status(400).json({ errors: err.array() });
   }
-  const { statusCode = 500, message = 'Unknown error ocurred!' } = err;
+  const { statusCode = 500, message = "Unknown error ocurred!" } = err;
   logger.error(message);
   return res.status(statusCode).json({ message });
 });

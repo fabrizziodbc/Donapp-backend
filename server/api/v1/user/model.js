@@ -1,24 +1,28 @@
-const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema(({
+const userSchema = mongoose.Schema({
   name: { type: String, required: true },
-  surname: { type: String, required: true },
+  surname: { type: String, required: false },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  campaigns: [{
-    type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'campaign',
-  }],
-}));
+  campaigns: [
+    {
+      type: mongoose.Types.ObjectId,
+      require: true,
+      ref: "campaign",
+    },
+  ],
+});
 
 /**
  * Password hash middleware
  */
-userSchema.pre('save', async function (next) {
+userSchema.pre("save", async function (next) {
   const user = this;
-  if (!user.isModified('password')) { return next(); }
+  if (!user.isModified("password")) {
+    return next();
+  }
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(user.password, salt);
   user.password = hash;
@@ -32,5 +36,5 @@ userSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

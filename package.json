@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "start": "cross-env NODE_ENV=production node index.js",
-		"test": "cross-env NODE_ENV=test jest --coverage",
-		"test:watch": "cross-env NODE_ENV=test jest --coverage --watch"
+    "test": "cross-env NODE_ENV=test jest --coverage",
+    "test:watch": "cross-env NODE_ENV=test jest --coverage --watch"
   },
   "keywords": [],
   "author": "FabrizzioDBC <fabrizziodbc@gmai.com>",
@@ -23,21 +23,22 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "cross-env": "^7.0.3",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.1",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.7.2",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "strip-final-newline": "^2.0.0",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
-  "engines":{
-    "node":"14.x"
+  "engines": {
+    "node": "14.x"
   }
 }
