@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Model = require('./model');
 const User = require('../user/model');
+const { cloudinary } = require('../../../utils/cloudinary');
 const { jwtsecret } = require('../../../config');
 
 exports.id = async (req, res, next) => {
@@ -112,7 +113,11 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   const { id } = req.params;
   try {
+    console.log('campaign id :', id);
+    const imgUrl = await Model.findById(id).select('-__v');
+    console.log(imgUrl.img);
     const session = await mongoose.startSession();
+    const imgId = await imgUrl.img.split('upload/')[1].split('/')[1].split('.')[0];
     await session.withTransaction(async () => {
       const campaign = await Model.findByIdAndDelete(id, {
         session,
@@ -122,6 +127,7 @@ exports.delete = async (req, res, next) => {
       await campaign.user.save({ session });
     });
     session.endSession();
+    await cloudinary.uploader.destroy(imgId, (result) => { console.log(result); });
     res.status(200).json({ msg: 'Delete campaign' });
   } catch (error) {
     next(error);
