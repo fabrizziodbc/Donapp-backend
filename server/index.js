@@ -15,9 +15,9 @@ const app = express();
 // middlewares
 app.use(requestId);
 app.use(requestLog);
-/* app.use(cors()); */
+app.use(cors());
 
-const whitelist = ['http://localhost:3000', 'https://fast-shelf-59848.herokuapp.com/'];
+/* const whitelist = ['http://localhost:3000', 'https://fast-shelf-59848.herokuapp.com/'];
 app.use(cors({
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {
@@ -27,7 +27,7 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
-}));
+})); */
 app.use(express.static('public'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
