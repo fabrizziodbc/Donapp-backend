@@ -23,7 +23,16 @@ exports.id = async (req, res, next) => {
 };
 exports.all = async (req, res, next) => {
   try {
-    const data = await Model.find({}).select('-__v');
+    console.log('req.header :', req.headers.limit);
+    /* console.log('req.headers NUmber :', parseInt(req.headers, 1)); */
+    let data;
+    if (!req.headers.limit) { data = await Model.find({}).select('-__v'); }
+    if (req.headers.limit) {
+      data = await Model.find({})
+        .sort({ date: -1 })
+        .limit(Number(req.headers.limit))
+        .exec();
+    }
     res.json({ data });
   } catch (error) {
     next(error);
