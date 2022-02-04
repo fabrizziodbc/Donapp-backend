@@ -96,20 +96,26 @@ exports.update = async (req, res, next) => {
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
   }
-  if (body.tags !== null && body.tags !== undefined) {
-    doc.tags = body.tags;
+  if (body.category !== null && body.category !== undefined) {
+    doc.category = body.category;
   }
   if (body.donations !== null && body.donations !== undefined) {
     doc.donations = body.donations;
   }
-  if (body.goal !== null && body.goal !== undefined) {
-    doc.goal = body.goal;
+  if (body.img !== null && body.img !== undefined) {
+    doc.img = body.img;
+  }
+  if (body.objetive !== null && body.objetive !== undefined) {
+    doc.objetive = body.objetive;
   }
   if (body.name !== null && body.name !== undefined) {
     doc.name = body.name;
   }
-  if (body.campaignReason !== null && body.campaignReason !== undefined) {
-    doc.campaignReason = body.campaignReason;
+  if (body.country !== null && body.country !== undefined) {
+    doc.country = body.country;
+  }
+  if (body.targetdate !== null && body.targetdate !== undefined) {
+    doc.targetdate = body.targetdate;
   }
   try {
     console.log('doc', doc);
