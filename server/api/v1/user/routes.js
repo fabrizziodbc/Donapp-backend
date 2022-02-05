@@ -18,6 +18,7 @@ router.post(
   body('password', 'Password is required').notEmpty(),
   userController.signIn,
 );
+router.delete('/testdelete', userController.testdelete);
 router.get('/special', passport.authenticate('jwt', { session: true }), (req, res) => res.status(200).json({ msg: 'success', user: req.user }));
 
 module.exports = router;
