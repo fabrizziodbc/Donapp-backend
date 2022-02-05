@@ -14,8 +14,8 @@ router
     }),
     body('country', 'Country is required!').notEmpty(),
     body('description', 'Description is required!').notEmpty(),
-    body('description', 'You must use at least five (05) characters').isLength({
-      min: 5,
+    body('description', 'You must use at least five (10) characters').isLength({
+      min: 10,
     }),
     body('description', 'You exceeded the maximum characters (280)').isLength({
       max: 280,
@@ -28,11 +28,6 @@ router
     body('name', 'You must use at least five (02) characters').isLength({
       min: 2,
     }),
-    /* body('campaignReason', 'Campaign reason is required!').notEmpty(), */
-    /*     body(
-      'campaignReason',
-      'You must use at least five (05) characters',
-    ).isLength({ min: 5 }), */
     controller.create,
   );
 router.route('/my-campaigns').get(controller.getByUserId);
