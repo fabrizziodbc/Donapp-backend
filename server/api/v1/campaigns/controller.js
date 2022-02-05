@@ -143,7 +143,7 @@ exports.delete = async (req, res, next) => {
     });
     session.endSession();
     await cloudinary.uploader.destroy(imgId, (result) => { console.log(result); });
-    res.status(200).json({ msg: 'Delete campaign' });
+    res.status(200).json({ msg: 'Campaign deleted' });
   } catch (error) {
     next(error);
   }

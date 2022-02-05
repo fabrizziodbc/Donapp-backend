@@ -76,3 +76,11 @@ exports.signIn = async (req, res, next) => {
   }
   return res.status(400).json({ msg: "The email or password are incorrect" });
 };
+exports.testdelete = async (req, res, next) => {
+  try {
+    await User.deleteOne({ email: 'cypressTest@fakemail.com' });
+    res.status(200).json({ msg: 'User deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
