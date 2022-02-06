@@ -105,8 +105,8 @@ exports.update = async (req, res, next) => {
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
   }
-  if (body.objetive !== null && body.objetive !== undefined) {
-    doc.objetive = body.objetive;
+  if (body.objective !== null && body.objective !== undefined) {
+    doc.objective = body.objective;
   }
   if (body.name !== null && body.name !== undefined) {
     doc.name = body.name;

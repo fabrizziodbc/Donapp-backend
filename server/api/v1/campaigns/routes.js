@@ -22,7 +22,7 @@ router
     }),
     /* body('img', 'Image is required!').notEmpty(), */
     body('category', 'Categories are required!').notEmpty(),
-    body('objetive', 'Goal is required!').notEmpty(),
+    body('objective', 'Goal is required!').notEmpty(),
     body('targetdate', 'Date limit is required!').notEmpty(),
     body('name', 'Name is required!').notEmpty(),
     body('name', 'You must use at least five (02) characters').isLength({
