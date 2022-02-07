@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+
 const express = require('express');
 const { body } = require('express-validator');
 const passport = require('passport');
