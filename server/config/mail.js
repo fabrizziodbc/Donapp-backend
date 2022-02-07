@@ -28,7 +28,7 @@ const sendEmail = async (email, html) => {
     await transporter.sendMail({
       from: ` <${mail.user}>`,
       to: email,
-      subject: "Bienvenido a Donapp",
+      subject: "Confirmación de cuenta DonApp",
       html,
     });
   } catch (error) {
@@ -36,7 +36,7 @@ const sendEmail = async (email, html) => {
   }
 };
 
-const getTemplate = () => {
+const getTemplate = (name, token) => {
   return `
        <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -179,7 +179,7 @@ const getTemplate = () => {
     </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a1e5c40a-ec5a-4714-a92c-6986c7890e13" data-mc-module-version="2019-10-22">
     </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="qa8oMphYHuL7xyQrTVscgD">
         <tbody><tr>
-          <td style="color: #516775; font-size: 30px; font-family: georgia; line-height:10px; padding:30px 0px 0px 0px;" valign="top" align="center" background-color="#ff0157"> BIENVENIDO A DONAPP</td>
+          <td style="color: #516775; font-size: 30px; font-family: georgia; line-height:10px; padding:30px 0px 0px 0px;" valign="top" align="center" background-color="#ff0157"> ${name} BIENVENIDO A DONAPP</td>
         </tr>
       </tbody></table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="bdzDb4B4pnnez4W7L1KpxJ">
         <tbody><tr>
@@ -222,7 +222,7 @@ const getTemplate = () => {
         <tbody><tr>
           <td style="padding:18px 0px 18px 0px; line-height:30px; text-align:inherit;" height="100%" valign="top" bgcolor=""><div><div style="font-family: inherit; text-align: center"><span style="color: #ed427c; font-size: 28px; font-family: georgia, serif"><strong>Quieres colaborar ahora?</strong></span></div><div></div></div></td>
         </tr>
-      </tbody></table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed" width="100%" data-muid="bKHWQMgPkL5opYCkxiM6aS"><tbody><tr><td align="center" class="outer-td" style="padding:20px 0px 0px 0px;" bgcolor=""><table border="0" cellpadding="0" cellspacing="0" class="button-css__deep-table___2OZyb wrapper-mobile" style="text-align:center"><tbody><tr><td align="center" bgcolor="#993300" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;"><a style="background-color:#d63c70; border:none; border-radius:5px; border-width:1px; color:#ffffff; display:inline-block; font-family:verdana,geneva,sans-serif; font-size:16px; font-weight:normal; letter-spacing:1px; line-height:30px; padding:12px 20px 12px 20px; text-align:center; text-decoration:none; border-style:solid;" href="https://modest-darwin-5fa285.netlify.app/" target="_blank">Ve a Donapp</a></td></tr></tbody></table></td></tr></tbody></table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="qkfYAswHNSwNpwb1p7m4gC">
+      </tbody></table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed" width="100%" data-muid="bKHWQMgPkL5opYCkxiM6aS"><tbody><tr><td align="center" class="outer-td" style="padding:20px 0px 0px 0px;" bgcolor=""><table border="0" cellpadding="0" cellspacing="0" class="button-css__deep-table___2OZyb wrapper-mobile" style="text-align:center"><tbody><tr><td align="center" bgcolor="#993300" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;"><a style="background-color:#d63c70; border:none; border-radius:5px; border-width:1px; color:#ffffff; display:inline-block; font-family:verdana,geneva,sans-serif; font-size:16px; font-weight:normal; letter-spacing:1px; line-height:30px; padding:12px 20px 12px 20px; text-align:center; text-decoration:none; border-style:solid;" href="https://modest-darwin-5fa285.netlify.app/api/user/confirm/${token}" target="_blank">Para confirmar tu cuenta,ingresa en elsiguiente enlace</a></td></tr></tbody></table></td></tr></tbody></table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="qkfYAswHNSwNpwb1p7m4gC">
         <tbody><tr>
           <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
           </td>

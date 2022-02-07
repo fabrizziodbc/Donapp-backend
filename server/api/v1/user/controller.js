@@ -2,6 +2,7 @@
 /* eslint-disable quotes */
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+const { v4: uuidv4 } = require('uuid');
 const User = require("./model");
 const config = require("../../../config");
 const { getTemplate, sendEmail } = require("../../../config/mail");
@@ -12,9 +13,21 @@ const { getTemplate, sendEmail } = require("../../../config/mail");
  * @returns function sign
  */
 function createToken(user) {
-  return jwt.sign({ id: user.id, email: user.email }, config.jwtsecret, {
+  return jwt.sign({ user }, config.jwtsecret, {
     expiresIn: 86400,
   });
+}
+
+function getTokenData(token) {
+  const data = null;
+  jwt.verify(token, config.jwtsecret, (err, decoded) => {
+    if (err) {
+      console.log('DataToken Error');
+    } else {
+      data = decoded;
+    }
+  });
+  return data;
 }
 
 /**
@@ -28,23 +41,32 @@ exports.signUp = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return next(errors);
   }
-  const user = await User.findOne({ email: req.body.email });
+  const { name, email } = req.body;
+
+  let user = await User.findOne({ email });
+
   if (user) {
     return res.status(400).json({ msg: "The user already exists" });
   }
-  const newUser = new User(req.body);
 
-  const template = getTemplate();
+  const code = uuidv4();
 
-  await sendEmail(req.body.email, template);
+  user = new User({ name, email, code });
 
-  await newUser.save();
+  const token = createToken({ email, code });
+
+  const template = getTemplate(name, token);
+
+  await sendEmail(email, template);
+
+  await user.save();
 
   return res.status(200).json({
-    name: newUser.name,
-    surname: newUser.surname,
-    email: newUser.email,
-    token: createToken(newUser),
+    name: user.name,
+    surname: user.surname,
+    email: user.email,
+    token: createToken(user),
+    msg: 'Registrado correctamente',
   });
 };
 
