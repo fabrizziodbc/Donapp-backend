@@ -101,6 +101,10 @@ exports.confirm = async (req, res) => {
     }
     user.status = "VERIFIED";
     await user.save();
+    return res.json({
+
+      msg: 'exito',
+    });
   } catch (error) {
     console.log(error);
     return res.json({
@@ -122,7 +126,7 @@ exports.signIn = async (req, res, next) => {
   }
   if (user.status != "VERIFIED") {
     return res.status(401).send({
-      message: "Pending Account. Please Verify Your Email!",
+      msg: "Pending Account. Please Verify Your Email!",
     });
   }
   const isMatch = await user.comparePassword(req.body.password);
