@@ -1,4 +1,11 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-const-assign */
+/* eslint-disable no-undef */
+/* eslint-disable linebreak-style */
+/* eslint-disable eqeqeq */
+/* eslint-disable linebreak-style */
+/* eslint-disable consistent-return */
+/* eslint-disable linebreak-style */
 /* eslint-disable quotes */
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
@@ -19,7 +26,7 @@ function createToken(user) {
 }
 
 function getTokenData(token) {
-  const data = null;
+  let data = null;
   jwt.verify(token, config.jwtsecret, (err, decoded) => {
     if (err) {
       console.log('DataToken Error');
@@ -37,37 +44,38 @@ function getTokenData(token) {
  * @returns new user
  */
 exports.signUp = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(errors);
+  try {
+    const { name, email } = req.body;
+
+    let user = await User.findOne({ email }) || null;
+
+    if (user !== null) {
+      return res.json({
+        msg: 'The user already exists',
+      });
+    }
+
+    const code = uuidv4();
+    user = new User({ name, email, code });
+    const token = createToken({ email, code });
+    const template = getTemplate(name, token);
+
+    await sendEmail(email, template);
+    await user.save();
+
+    res.status(200).json({
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      token: createToken(user),
+      msg: 'Registrado correctamente',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      msg: "Confirmation user error",
+    });
   }
-  const { name, email } = req.body;
-
-  let user = await User.findOne({ email });
-
-  if (user) {
-    return res.status(400).json({ msg: "The user already exists" });
-  }
-
-  const code = uuidv4();
-
-  user = new User({ name, email, code });
-
-  const token = createToken({ email, code });
-
-  const template = getTemplate(name, token);
-
-  await sendEmail(email, template);
-
-  await user.save();
-
-  return res.status(200).json({
-    name: user.name,
-    surname: user.surname,
-    email: user.email,
-    token: createToken(user),
-    msg: 'Registrado correctamente',
-  });
 };
 
 /**
@@ -77,15 +85,45 @@ exports.signUp = async (req, res, next) => {
  * @param {Function} next
  * @returns sign in msg
  */
+
+exports.confirm = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const data = await getTokenData(token);
+    console.log(data);
+    const { email } = data.user;
+    const user = await User.findOne({ email }) || null;
+    if (user === null) {
+      return res.json({
+        success: false,
+        msg: 'Usuario no existe',
+      });
+    }
+    user.status = "VERIFIED";
+    await user.save();
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      msg: "Confirmation user error",
+    });
+  }
+};
+
 exports.signIn = async (req, res, next) => {
   console.log("body: ", req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(errors);
   }
+
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return res.status(400).json({ msg: "The user does not exists" });
+  }
+  if (user.status != "VERIFIED") {
+    return res.status(401).send({
+      message: "Pending Account. Please Verify Your Email!",
+    });
   }
   const isMatch = await user.comparePassword(req.body.password);
   if (isMatch) {

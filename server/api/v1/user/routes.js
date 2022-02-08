@@ -14,6 +14,7 @@ router.post(
   body('password', 'Password is required').notEmpty(),
   userController.signUp,
 );
+router.get('/confirm/:token', [], userController.confirm);
 router.post(
   '/signin',
   body('email', 'Email is required').notEmpty(),
