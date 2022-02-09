@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Model = require('./model');
 const User = require('../user/model');
+const { cloudinary } = require('../../../utils/cloudinary');
 const { jwtsecret } = require('../../../config');
 
 exports.id = async (req, res, next) => {
@@ -22,7 +23,16 @@ exports.id = async (req, res, next) => {
 };
 exports.all = async (req, res, next) => {
   try {
-    const data = await Model.find({}).select('-__v');
+    console.log('req.header :', req.headers.limit);
+    /* console.log('req.headers NUmber :', parseInt(req.headers, 1)); */
+    let data;
+    if (!req.headers.limit) { data = await Model.find({}).select('-__v'); }
+    if (req.headers.limit) {
+      data = await Model.find({})
+        .sort({ date: -1 })
+        .limit(Number(req.headers.limit))
+        .exec();
+    }
     res.json({ data });
   } catch (error) {
     next(error);
@@ -86,20 +96,26 @@ exports.update = async (req, res, next) => {
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
   }
-  if (body.tags !== null && body.tags !== undefined) {
-    doc.tags = body.tags;
+  if (body.category !== null && body.category !== undefined) {
+    doc.category = body.category;
   }
   if (body.donations !== null && body.donations !== undefined) {
     doc.donations = body.donations;
   }
-  if (body.goal !== null && body.goal !== undefined) {
-    doc.goal = body.goal;
+  if (body.img !== null && body.img !== undefined) {
+    doc.img = body.img;
+  }
+  if (body.objective !== null && body.objective !== undefined) {
+    doc.objective = body.objective;
   }
   if (body.name !== null && body.name !== undefined) {
     doc.name = body.name;
   }
-  if (body.campaignReason !== null && body.campaignReason !== undefined) {
-    doc.campaignReason = body.campaignReason;
+  if (body.country !== null && body.country !== undefined) {
+    doc.country = body.country;
+  }
+  if (body.targetdate !== null && body.targetdate !== undefined) {
+    doc.targetdate = body.targetdate;
   }
   try {
     console.log('doc', doc);
@@ -112,7 +128,11 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   const { id } = req.params;
   try {
+    console.log('campaign id :', id);
+    const imgUrl = await Model.findById(id).select('-__v');
+    console.log(imgUrl.img);
     const session = await mongoose.startSession();
+    const imgId = await imgUrl.img.split('upload/')[1].split('/')[1].split('.')[0];
     await session.withTransaction(async () => {
       const campaign = await Model.findByIdAndDelete(id, {
         session,
@@ -122,7 +142,8 @@ exports.delete = async (req, res, next) => {
       await campaign.user.save({ session });
     });
     session.endSession();
-    res.status(200).json({ msg: 'Delete campaign' });
+    await cloudinary.uploader.destroy(imgId, (result) => { console.log(result); });
+    res.status(200).json({ msg: 'Campaign deleted' });
   } catch (error) {
     next(error);
   }

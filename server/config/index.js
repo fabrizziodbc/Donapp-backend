@@ -15,6 +15,7 @@ const getEnv = () => {
 };
 
 const config = {
+  currentEnviroment: process.env.NODE_ENV,
   port: process.env.PORT || 5000,
   jwtsecret: 'Your secret is here',
   database: {

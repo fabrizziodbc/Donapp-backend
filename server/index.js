@@ -18,7 +18,7 @@ app.use(requestId);
 app.use(requestLog);
 app.use(cors());
 
-/* const whitelist = ['https://localhost:3000'];
+/* const whitelist = ['http://localhost:3000', 'https://fast-shelf-59848.herokuapp.com/'];
 app.use(cors({
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {
@@ -27,6 +27,7 @@ app.use(cors({
       callback(new Error('No permitido'));
     }
   },
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
 })); */
 app.use(express.static('public'));
 app.use(express.json({ limit: '50mb' }));
