@@ -25,17 +25,17 @@ function createToken(user) {
   });
 }
 
-function getTokenData(token) {
-  let data = null;
-  jwt.verify(token, config.jwtsecret, (err, decoded) => {
-    if (err) {
-      console.log('DataToken Error');
-    } else {
-      data = decoded;
-    }
-  });
-  return data;
-}
+// function getTokenData(token) {
+//   let data = null;
+//   jwt.verify(token, config.jwtsecret, (err, decoded) => {
+//     if (err) {
+//       console.log('DataToken Error');
+//     } else {
+//       data = decoded;
+//     }
+//   });
+//   return data;
+// }
 
 /**
  * Sign up new user
@@ -50,23 +50,18 @@ exports.signUp = async (req, res, next) => {
       return next(errors);
     }
     const { name, email } = req.body;
-
     let user = await User.findOne({ email }) || null;
-
     if (user !== null) {
       return res.json({
         msg: 'The user already exists',
       });
     }
-
     const code = uuidv4();
+    console.log(code);
     user = new User({ name, email, code });
-    const token = createToken({ email, code });
-    const template = getTemplate(name, token);
-
+    const template = getTemplate(name, code);
     await sendEmail(email, template);
     await user.save();
-
     res.status(200).json({
       name: user.name,
       surname: user.surname,
@@ -93,22 +88,28 @@ exports.signUp = async (req, res, next) => {
 exports.confirm = async (req, res) => {
   try {
     const { token } = req.params;
-    const data = await getTokenData(token);
-    console.log(data);
-    const { email } = data.user;
-    const user = await User.findOne({ email }) || null;
+    console.log(token);
+    console.log("codeconfirm", req.params);
+    // const { user } = req;
+    const user = await User.findOne({ code: token }) || null;
+    console.log("user", user);
+    if (user) {
+      user.status = "VERIFIED";
+      await user.save();
+      return res.status(200).json({
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        token: createToken(user),
+        msg: 'Registrado correctamente',
+      });
+    }
     if (user === null) {
       return res.json({
         success: false,
         msg: 'Usuario no existe',
       });
     }
-    user.status = "VERIFIED";
-    await user.save();
-    return res.json({
-
-      msg: 'exito',
-    });
   } catch (error) {
     console.log(error);
     return res.json({
@@ -128,11 +129,12 @@ exports.signIn = async (req, res, next) => {
   if (!user) {
     return res.status(400).json({ msg: "The user does not exists" });
   }
-  if (user.status != "VERIFIED") {
+  if (user.status !== "VERIFIED") {
     return res.status(401).send({
       msg: "Pending Account. Please Verify Your Email!",
     });
   }
+  console.log(user);
   const isMatch = await user.comparePassword(req.body.password);
   if (isMatch) {
     return res.status(200).json({
