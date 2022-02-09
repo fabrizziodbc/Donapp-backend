@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const express = require('express');
 const campaigns = require('./campaigns/routes');
 const userRouter = require('./user/routes');
