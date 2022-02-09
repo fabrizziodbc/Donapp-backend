@@ -49,7 +49,7 @@ exports.signUp = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return next(errors);
     }
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
     let user = await User.findOne({ email }) || null;
     if (user !== null) {
       return res.json({
@@ -58,7 +58,9 @@ exports.signUp = async (req, res, next) => {
     }
     const code = uuidv4();
     console.log(code);
-    user = new User({ name, email, code });
+    user = new User({
+      name, email, password, code,
+    });
     const template = getTemplate(name, code);
     await sendEmail(email, template);
     await user.save();
@@ -119,32 +121,39 @@ exports.confirm = async (req, res) => {
 };
 
 exports.signIn = async (req, res, next) => {
-  console.log("body: ", req.body);
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(errors);
-  }
+  try {
+    console.log("body: ", req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(errors);
+    }
 
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return res.status(400).json({ msg: "The user does not exists" });
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).json({ msg: "The user does not exists" });
+    }
+    if (user.status !== "VERIFIED") {
+      return res.status(401).send({
+        msg: "Pending Account. Please Verify Your Email!",
+      });
+    }
+    console.log(user);
+    const isMatch = await user.comparePassword(req.body.password);
+    if (isMatch) {
+      return res.status(200).json({
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        token: createToken(user),
+      });
+    }
+    return res.status(400).json({ msg: "The email or password are incorrect" });
+  } catch (error) {
+    console.log("error en singin", error);
+    /* return res.json({
+      msg: error,
+    }); */
   }
-  if (user.status !== "VERIFIED") {
-    return res.status(401).send({
-      msg: "Pending Account. Please Verify Your Email!",
-    });
-  }
-  console.log(user);
-  const isMatch = await user.comparePassword(req.body.password);
-  if (isMatch) {
-    return res.status(200).json({
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      token: createToken(user),
-    });
-  }
-  return res.status(400).json({ msg: "The email or password are incorrect" });
 };
 exports.testdelete = async (req, res, next) => {
   try {

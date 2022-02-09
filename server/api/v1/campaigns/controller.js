@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -41,7 +42,7 @@ exports.all = async (req, res, next) => {
 exports.getByUserId = async (req, res, next) => {
   try {
     const userData = jwt.verify(req.headers.usertoken, jwtsecret);
-    const data = await User.findById(userData.id)
+    const data = await User.findById(userData.user._id)
       .select('-__v')
       .populate({ path: 'campaigns' });
     res.json({ data });

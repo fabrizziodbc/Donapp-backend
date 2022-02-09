@@ -46,7 +46,7 @@ const userSchema = mongoose.Schema(
     name: { type: String, required: true },
     surname: { type: String, required: false },
     email: { type: String, required: true, unique: true },
-    password: { type: String },
+    password: { type: String, required: true },
     code: { type: String, required: true },
     status: { type: String, required: true, default: 'UNVERIFIED' },
     billing: billingSchema,
