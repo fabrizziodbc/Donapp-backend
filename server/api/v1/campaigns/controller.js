@@ -1,9 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const Model = require('./model');
 const User = require('../user/model');
-const { jwtsecret } = require('../../../config');
+const { cloudinary } = require('../../../utils/cloudinary');
 
 exports.id = async (req, res, next) => {
   const { id } = req.params;
@@ -22,7 +22,16 @@ exports.id = async (req, res, next) => {
 };
 exports.all = async (req, res, next) => {
   try {
-    const data = await Model.find({}).select('-__v');
+    console.log('req.header :', req.headers.limit);
+    /* console.log('req.headers NUmber :', parseInt(req.headers, 1)); */
+    let data;
+    if (!req.headers.limit) { data = await Model.find({}).select('-__v'); }
+    if (req.headers.limit) {
+      data = await Model.find({})
+        .sort({ date: -1 })
+        .limit(Number(req.headers.limit))
+        .exec();
+    }
     res.json({ data });
   } catch (error) {
     next(error);
@@ -30,8 +39,7 @@ exports.all = async (req, res, next) => {
 };
 exports.getByUserId = async (req, res, next) => {
   try {
-    const userData = jwt.verify(req.headers.usertoken, jwtsecret);
-    const data = await User.findById(userData.id)
+    const data = await User.findById(req.user._id)
       .select('-__v')
       .populate({ path: 'campaigns' });
     res.json({ data });
@@ -41,15 +49,14 @@ exports.getByUserId = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
+  console.log('req.use :', req.user);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(errors);
   }
-  const userData = jwt.verify(req.headers.usertoken, jwtsecret);
   const { body = {} } = req;
-  const newDocument = new Model({ ...body, user: userData.id });
-  const user = await User.findById(userData.id);
-  console.log('userData.id :', userData.id);
+  const newDocument = new Model({ ...body, user: req.user._id });
+  const user = await User.findById(req.user._id);
   if (!user) {
     return res.status(404).json({ msg: 'Could not find user for provided id' });
   }
@@ -86,20 +93,26 @@ exports.update = async (req, res, next) => {
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
   }
-  if (body.tags !== null && body.tags !== undefined) {
-    doc.tags = body.tags;
+  if (body.category !== null && body.category !== undefined) {
+    doc.category = body.category;
   }
   if (body.donations !== null && body.donations !== undefined) {
     doc.donations = body.donations;
   }
-  if (body.goal !== null && body.goal !== undefined) {
-    doc.goal = body.goal;
+  if (body.img !== null && body.img !== undefined) {
+    doc.img = body.img;
+  }
+  if (body.objective !== null && body.objective !== undefined) {
+    doc.objective = body.objective;
   }
   if (body.name !== null && body.name !== undefined) {
     doc.name = body.name;
   }
-  if (body.campaignReason !== null && body.campaignReason !== undefined) {
-    doc.campaignReason = body.campaignReason;
+  if (body.country !== null && body.country !== undefined) {
+    doc.country = body.country;
+  }
+  if (body.targetdate !== null && body.targetdate !== undefined) {
+    doc.targetdate = body.targetdate;
   }
   try {
     console.log('doc', doc);
@@ -112,7 +125,11 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   const { id } = req.params;
   try {
+    console.log('campaign id :', id);
+    const imgUrl = await Model.findById(id).select('-__v');
+    console.log(imgUrl.img);
     const session = await mongoose.startSession();
+    const imgId = await imgUrl.img.split('upload/')[1].split('/')[1].split('.')[0];
     await session.withTransaction(async () => {
       const campaign = await Model.findByIdAndDelete(id, {
         session,
@@ -122,7 +139,8 @@ exports.delete = async (req, res, next) => {
       await campaign.user.save({ session });
     });
     session.endSession();
-    res.status(200).json({ msg: 'Delete campaign' });
+    await cloudinary.uploader.destroy(imgId, (result) => { console.log(result); });
+    res.status(200).json({ msg: 'Campaign deleted' });
   } catch (error) {
     next(error);
   }

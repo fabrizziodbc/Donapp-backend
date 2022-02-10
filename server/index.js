@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable import/no-unresolved */
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
@@ -15,7 +17,8 @@ const app = express();
 app.use(requestId);
 app.use(requestLog);
 app.use(cors());
-/* const whitelist = ['https://localhost:3000'];
+
+/* const whitelist = ['http://localhost:3000', 'https://fast-shelf-59848.herokuapp.com/'];
 app.use(cors({
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {
@@ -24,6 +27,7 @@ app.use(cors({
       callback(new Error('No permitido'));
     }
   },
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
 })); */
 app.use(express.static('public'));
 app.use(express.json({ limit: '50mb' }));
