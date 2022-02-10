@@ -1,11 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const Model = require('./model');
 const User = require('../user/model');
 const { cloudinary } = require('../../../utils/cloudinary');
-const { jwtsecret } = require('../../../config');
 
 exports.id = async (req, res, next) => {
   const { id } = req.params;
@@ -41,8 +39,7 @@ exports.all = async (req, res, next) => {
 };
 exports.getByUserId = async (req, res, next) => {
   try {
-    const userData = jwt.verify(req.headers.usertoken, jwtsecret);
-    const data = await User.findById(userData.user._id)
+    const data = await User.findById(req.user._id)
       .select('-__v')
       .populate({ path: 'campaigns' });
     res.json({ data });
@@ -52,15 +49,14 @@ exports.getByUserId = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
+  console.log('req.use :', req.user);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(errors);
   }
-  const userData = jwt.verify(req.headers.usertoken, jwtsecret);
   const { body = {} } = req;
-  const newDocument = new Model({ ...body, user: userData.id });
-  const user = await User.findById(userData.id);
-  console.log('userData.id :', userData.id);
+  const newDocument = new Model({ ...body, user: req.user._id });
+  const user = await User.findById(req.user._id);
   if (!user) {
     return res.status(404).json({ msg: 'Could not find user for provided id' });
   }
