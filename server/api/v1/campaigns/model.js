@@ -11,6 +11,7 @@ const campaign = new mongoose.Schema({
     required: true,
   },
   donations: { type: Number, default: 0 },
+  donationTimes: { type: Number, default: 0 },
   objective: { type: Number, min: [50, 'must set 50 USD minimum'], required: true },
   name: { type: String, required: true },
   targetdate: { type: Date, required: true },
