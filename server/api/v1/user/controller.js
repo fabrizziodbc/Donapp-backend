@@ -20,7 +20,7 @@ const { getTemplate, sendEmail } = require("../../../config/mail");
  * @returns function sign
  */
 function createToken(user) {
-  return jwt.sign({ user }, config.jwtsecret, {
+  return jwt.sign({ id: user.id, email: user.email }, config.jwtsecret, {
     expiresIn: 86400,
   });
 }

@@ -1,5 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
+const passport = require('passport');
 const controller = require('./controller');
 
 const router = express.Router();
@@ -8,6 +9,7 @@ router
   .route('/')
   .get(controller.all)
   .post(
+    passport.authenticate('jwt', { session: true }),
     body('title', 'Title is required!').notEmpty(),
     body('title', 'You exceeded the maximum characters (72)').isLength({
       max: 72,
@@ -30,7 +32,7 @@ router
     }),
     controller.create,
   );
-router.route('/my-campaigns').get(controller.getByUserId);
+router.route('/my-campaigns').get(passport.authenticate('jwt', { session: true }), controller.getByUserId);
 router.param('id', controller.id);
 router
   .route('/:id')
