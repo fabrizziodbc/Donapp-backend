@@ -65,6 +65,7 @@ exports.signUp = async (req, res, next) => {
     await sendEmail(email, template);
     await user.save();
     res.status(200).json({
+      id: user.id,
       name: user.name,
       surname: user.surname,
       email: user.email,
@@ -99,6 +100,7 @@ exports.confirm = async (req, res) => {
       user.status = "VERIFIED";
       await user.save();
       return res.status(200).json({
+        id: user.id,
         name: user.name,
         surname: user.surname,
         email: user.email,
@@ -141,6 +143,7 @@ exports.signIn = async (req, res, next) => {
     const isMatch = await user.comparePassword(req.body.password);
     if (isMatch) {
       return res.status(200).json({
+        id: user.id,
         name: user.name,
         surname: user.surname,
         email: user.email,
