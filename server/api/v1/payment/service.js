@@ -52,8 +52,25 @@ async function makePayment(user, payment) {
   return epayco.charge.create(paymentInfo);
 }
 
+async function deleteToken(user) {
+  const customerId = get(user, 'billing.customerId');
+  try {
+    const deleteCustomerInfo = {
+      franchise: 'visa',
+      mask: '457562******0326',
+      customer_id: customerId,
+    };
+    await epayco.customers.delete(deleteCustomerInfo);
+    const customer = await epayco.customers.get(customerId);
+    console.log('customer: ', customer);
+  } catch (err) {
+    console.log(`err: ${err}`);
+  }
+}
+
 module.exports = {
   createCardToken,
   createCustomer,
   makePayment,
+  deleteToken,
 };
