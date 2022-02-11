@@ -3,7 +3,12 @@ const socketio = require('socket.io');
 const socket = {};
 
 function connect(server) {
-  const io = socketio(server);
+  const options = {
+    cors: {
+      origin: true,
+    },
+  };
+  const io = socketio(server, options);
 
   socket.io = io;
 }
