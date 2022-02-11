@@ -92,7 +92,7 @@ exports.update = async (req, res, next) => {
     doc.donations = body.donations;
   }
   if (body.commentsDb !== null && body.commentsDb !== undefined) {
-    doc.commentsDb.push(body.commentsDb);
+    doc.commentsDb.push({ name: doc.name, comment: body.commentsDb });
   }
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
