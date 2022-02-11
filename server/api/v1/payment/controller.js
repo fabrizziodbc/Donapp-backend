@@ -2,8 +2,11 @@
 const get = require('lodash/get');
 const Model = require('../campaigns/model');
 const Payment = require('./model');
-const { createCardToken, createCustomer, makePayment } = require('./service');
-const { updateUser, addBillingCustomerId } = require('../user/service');
+const {
+  createCardToken, createCustomer, makePayment, deleteToken,
+} = require('./service');
+const { updateUser, addBillingCustomerId, findUserByCampaignId } = require('../user/service');
+const { paymentNotificationEvent } = require('./event');
 
 async function createCardTokenHandler(req, res) {
   const {
@@ -89,6 +92,11 @@ async function createPaymentHandler(req, res) {
     currentCampaign.donationTimes += 1;
     await currentCampaign.save();
     console.log('donaciones actuales :', currentCampaign.donations);
+    // desvincular el usuario de la tarjeta
+    deleteToken(user);
+    // emit payment notification
+    const userCampaign = await findUserByCampaignId(payment.campaignId);
+    paymentNotificationEvent(userCampaign, user.name, payment.value);
     return res.status(200).json({ data });
   } catch (error) {
     console.log(error);
