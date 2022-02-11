@@ -91,6 +91,9 @@ exports.update = async (req, res, next) => {
   if (body.donations !== null && body.donations !== undefined) {
     doc.donations = body.donations;
   }
+  if (body.commentsDb !== null && body.commentsDb !== undefined) {
+    doc.commentsDb.push(body.commentsDb);
+  }
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
   }
