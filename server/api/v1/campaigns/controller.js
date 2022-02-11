@@ -23,15 +23,7 @@ exports.id = async (req, res, next) => {
 exports.all = async (req, res, next) => {
   try {
     console.log('req.header :', req.headers.limit);
-    /* console.log('req.headers NUmber :', parseInt(req.headers, 1)); */
-    let data;
-    if (!req.headers.limit) { data = await Model.find({}).select('-__v'); }
-    if (req.headers.limit) {
-      data = await Model.find({})
-        .sort({ date: -1 })
-        .limit(Number(req.headers.limit))
-        .exec();
-    }
+    const data = await Model.find({}).sort({ date: -1 }).select('-__v');
     res.json({ data });
   } catch (error) {
     next(error);
@@ -98,6 +90,9 @@ exports.update = async (req, res, next) => {
   }
   if (body.donations !== null && body.donations !== undefined) {
     doc.donations = body.donations;
+  }
+  if (body.commentsDb !== null && body.commentsDb !== undefined) {
+    doc.commentsDb.push(body.commentsDb);
   }
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;
