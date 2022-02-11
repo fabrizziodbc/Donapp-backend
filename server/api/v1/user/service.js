@@ -1,5 +1,6 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-underscore-dangle */
+// const mongoose = require('mongoose');
 const { get } = require('lodash');
 const User = require('./model');
 
@@ -21,7 +22,14 @@ async function addBillingCustomerId(user, customerId) {
   return newUser;
 }
 
+async function findUserByCampaignId(campaignId) {
+  // const newUser = await User.find({ campaigns: { $in: [mongoose.Types.objectId(campaignId)] } });
+  const newUser = await User.find().where('campaigns').in([campaignId]).exec();
+  return newUser;
+}
+
 module.exports = {
   updateUser,
   addBillingCustomerId,
+  findUserByCampaignId,
 };
