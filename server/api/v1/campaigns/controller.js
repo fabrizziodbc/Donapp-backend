@@ -73,7 +73,7 @@ exports.read = async (req, res, next) => {
   res.json({ data: doc });
 };
 exports.update = async (req, res, next) => {
-  const { doc = {}, body = {} } = req;
+  const { doc = {}, body = {}, user } = req;
   console.log('doc', doc);
   console.log('body', body);
   if (body.title !== null && body.title !== undefined) {
@@ -92,7 +92,7 @@ exports.update = async (req, res, next) => {
     doc.donations = body.donations;
   }
   if (body.commentsDb !== null && body.commentsDb !== undefined) {
-    doc.commentsDb.push({ name: doc.name, comment: body.commentsDb });
+    doc.commentsDb.push({ name: user.name, comment: body.commentsDb });
   }
   if (body.img !== null && body.img !== undefined) {
     doc.img = body.img;

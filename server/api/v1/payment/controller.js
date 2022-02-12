@@ -89,11 +89,9 @@ async function createPaymentHandler(req, res) {
     });
     // Actualizar donaciones
     const currentCampaign = await Model.findOne({ _id: payment.campaignId });
-    console.log('donaciones actuales :', currentCampaign.donations);
     currentCampaign.donations += Number(payment.donateAmount);
     currentCampaign.donationTimes += 1;
     await currentCampaign.save();
-    console.log('donaciones actuales :', currentCampaign.donations);
     // desvincular el usuario de la tarjeta
     deleteToken(user);
     // emit payment notification
