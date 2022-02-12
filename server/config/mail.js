@@ -474,7 +474,7 @@ const donationSucTemplate = (name, benefited, ammout) => {
     </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="2f94ef24-a0d9-4e6f-be94-d2d1257946b0" data-mc-module-version="2019-10-22">
       <tbody>
         <tr>
-          <td style="padding:18px 50px 18px 50px; line-height:22px; text-align:inherit; background-color:#dde6de;" height="100%" valign="top" bgcolor="#dde6de" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 16px; font-family: inherit">Estamos seguros que tus $ ${ammout} le serán de mucha ayuda a ${benefited}.</span></div>
+          <td style="padding:18px 50px 18px 50px; line-height:22px; text-align:inherit; background-color:#dde6de;" height="100%" valign="top" bgcolor="#dde6de" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 16px; font-family: inherit">Estamos seguros que tus ${ammout} USD le serán de mucha ayuda a ${benefited}.</span></div>
   <div style="font-family: inherit; text-align: center"><span style="font-size: 16px; font-family: inherit">Recuerda que si quieres apoyar aún más, puedes compartir la campaña con tus amigos y familiares.</span></div><div></div></div></td>
         </tr>
       </tbody>
