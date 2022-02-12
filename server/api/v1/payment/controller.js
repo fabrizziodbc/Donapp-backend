@@ -2,6 +2,7 @@
 const get = require('lodash/get');
 const Model = require('../campaigns/model');
 const Payment = require('./model');
+const { donationSucTemplate, sendEmail } = require('../../../config/mail');
 const {
   createCardToken, createCustomer, makePayment, deleteToken,
 } = require('./service');
@@ -86,6 +87,7 @@ async function createPaymentHandler(req, res) {
       tax: payment?.tax,
       taxBase: payment?.taxBase,
     });
+    // Actualizar donaciones
     const currentCampaign = await Model.findOne({ _id: payment.campaignId });
     console.log('donaciones actuales :', currentCampaign.donations);
     currentCampaign.donations += Number(payment.donateAmount);
@@ -96,7 +98,10 @@ async function createPaymentHandler(req, res) {
     deleteToken(user);
     // emit payment notification
     const userCampaign = await findUserByCampaignId(payment.campaignId);
-    paymentNotificationEvent(userCampaign, user.name, payment.value);
+    paymentNotificationEvent(userCampaign, user.name, payment.donateAmount);
+    // correo de confirmación
+    const template = donationSucTemplate(user.name, currentCampaign.name, payment.donateAmount);
+    await sendEmail(user.email, '¡Donación exitosa!', template);
     return res.status(200).json({ data });
   } catch (error) {
     console.log(error);

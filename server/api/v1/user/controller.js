@@ -62,7 +62,7 @@ exports.signUp = async (req, res, next) => {
       name, email, password, code,
     });
     const template = getTemplate(name, code);
-    await sendEmail(email, template);
+    await sendEmail(email, "Confirmación de cuenta DonApp", template);
     await user.save();
     res.status(200).json({
       id: user.id,
